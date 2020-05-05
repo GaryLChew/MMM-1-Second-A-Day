@@ -1,0 +1,28 @@
+{
+  "name": "Magic-Mirror-Module-1-Second-A-Day",
+  "version": "1.0.0",
+  "description": "1-Second-A-Day module for Magic Mirror",
+  "repository":
+  {
+    "type": "git",
+    "url": "git+https://github.com/garylchew/MMM-1-Second-A-Day"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "1 second a day",
+    "module"
+  ],
+  "author": "Gary Chew and Kyle Stadelmann",
+  "contributors": "https://github.com/garylchew/MMM-1-Second-A-Day/graphs/contributors",
+  "license": "MIT",
+  "bugs":
+  {
+    "url": "https://github.com/garylchew/MMM-1-Second-A-Day/issues"
+  },
+  "homepage": "https://github.com/garylchew/MMM-1-Second-A-Day#readme",
+  "dependencies":
+  {
+    "recordrtc": "latest"
+  }
+}
