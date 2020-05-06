@@ -8,7 +8,7 @@ module.exports = NodeHelper.create({
 
     socketNotificationReceived: function(notification, payload) {
         if (notification === "RECORD") {
-            Log.log("Received RECORD notification.");
+            console.log("Received RECORD notification.");
             this.record();
         }
     },
