@@ -7,38 +7,25 @@ module.exports = NodeHelper.create({
     },
 
     socketNotificationReceived: function(notification, payload) {
-        if (notification === "RECORD") {
-            console.log("Received RECORD notification.");
-            this.record();
+        if (notification === "SAVE_1_SECOND_VIDEO") {
+            console.log("Node helper received SAVE_1_SECOND_VIDEO");
+            this.save1SecondVideo(payload);
         }
     },
 
-    record : function() {
-        captureCamera(function(camera) {
-            var recorder = RecordRTC(camera, {
-                type: 'video'
-            });
-            Log.info("recording");
-            recorder.startRecording();
-
-            recorder.stopRecording(() => {
-                recorder.save('./video.webm');
-            });
-
-            // release camera on stopRecording
-            recorder.camera = camera;
-
-        });
+    save1SecondVideo : function(blob) {
+        const fs = require('fs');
+        const filePath = './modules/MMM-1-Second-A-Day/videos/1-second-videos/';
+        const fileName = 'video';
+        const fileExtension = 'webm';
+        const fileFullName = filePath + fileName + (Math.round(Math.random() * 9999999999) + 888888888) + '.' + fileExtension;
+        fs.mkdirSync(filePath, { recursive: true });
+        fs.writeFile(fileFullName, Buffer.from(blob), {}, err => {
+            if(err){
+                console.error(err)
+                return
+            }
+            console.log('video saved')
+        })
     },
-
-
 });
-
-function captureCamera(callback) {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(camera) {
-        callback(camera);
-    }).catch(function(error) {
-        alert('Unable to capture your camera. Please check console logs.');
-        console.error(error);
-    });
-}

@@ -20,6 +20,5 @@
   },
   "homepage": "https://github.com/garylchew/MMM-1-Second-A-Day#readme",
   "dependencies": {
-    "recordrtc": "latest"
   }
 }
