@@ -62,8 +62,8 @@ Module.register('MMM-1-Second-A-Day',
 	// Override dom generator.
 	getDom: function() {
 		var wrapper = document.createElement("div");
-		var h = document.createElement("h1");
-		h.innerHTML = "hello test!"
+		var h = document.createElement("p");
+		h.innerHTML = "TODO"
 		wrapper.appendChild(h);
 
 		return wrapper;
