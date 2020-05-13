@@ -44,9 +44,12 @@ module.exports = NodeHelper.create({
 
 		filenames = fs.readdirSync(PATH_TO_VIDEOS);
 		filenames.forEach(function(filename) {
-  		// add each video file to ffmpeg command
+			// add each video file to ffmpeg command
   			command.addInput(PATH_TO_VIDEOS + filename);
 		});
+
+	    	// create file path for compilation
+		fs.mkdirSync(PATH_TO_COMPILATIONS, { recursive: true });
 
 		// call ffmpeg merge command
 		command
