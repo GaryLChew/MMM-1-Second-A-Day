@@ -20,7 +20,11 @@ module.exports = NodeHelper.create({
 		}
 		if (notification === "UPLOAD_COMPILATIONS") {
 			console.log("Node helper received UPLOAD_COMPILATIONS");
-			this.uploadCompilations();
+			
+			if (payload)
+				this.uploadCompilations(payload);
+			else
+				this.uploadCompilations('');
 		}
     },
 
@@ -72,7 +76,7 @@ module.exports = NodeHelper.create({
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
 	},
 
-	uploadCompilations: function () {
+	uploadCompilations: function (destination) {
 		const uploadUniqueFile = require('./upload.js');
 		const fs = require('fs');
 		
@@ -82,7 +86,7 @@ module.exports = NodeHelper.create({
 			else {
 				files.forEach(function(file) {
 					console.log("Uploading " + file);
-					uploadUniqueFile(file, PATH_TO_COMPILATIONS+file);
+					uploadUniqueFile(file, PATH_TO_COMPILATIONS+file, destination);
 				});
 			}
 		});

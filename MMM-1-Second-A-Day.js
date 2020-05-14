@@ -51,7 +51,7 @@ Module.register('MMM-1-Second-A-Day',
         	this.sendSocketNotification("COMPILE_VIDEOS");
 		}
 		if (notification === "UPLOAD_COMPILATIONS") {
-        	this.sendSocketNotification("UPLOAD_COMPILATIONS");
+        	this.sendSocketNotification("UPLOAD_COMPILATIONS", this.config.driveDestination);
 		}
     },
 
