@@ -50,6 +50,9 @@ Module.register('MMM-1-Second-A-Day',
         if (notification === "COMPILE_VIDEOS") {
         	this.sendSocketNotification("COMPILE_VIDEOS");
 		}
+		if (notification === "UPLOAD_COMPILATIONS") {
+        	this.sendSocketNotification("UPLOAD_COMPILATIONS");
+		}
     },
 
     socketNotificationReceived: function(notification, payload) {

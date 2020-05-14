@@ -1,6 +1,9 @@
 'use strict';
 const NodeHelper = require('node_helper');
 
+const PATH_TO_VIDEOS = './modules/MMM-1-Second-A-Day/videos/clips/';
+const PATH_TO_COMPILATIONS ='./modules/MMM-1-Second-A-Day/videos/compilations/';
+
 module.exports = NodeHelper.create({
     start: function() {
         console.log("Starting node helper for: " + this.name);
@@ -15,17 +18,20 @@ module.exports = NodeHelper.create({
 			console.log("Node helper received COMPILE_VIDEOS");
 			this.compileVideos();
 		}
+		if (notification === "UPLOAD_COMPILATIONS") {
+			console.log("Node helper received UPLOAD_COMPILATIONS");
+			this.uploadCompilations();
+		}
     },
 
     save1SecondVideo : function(blob) {
         const fs = require('fs');
         const moment = require('moment');
-        const filePath = './modules/MMM-1-Second-A-Day/videos/clips/';
 		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
 		const fileName = 'clip_' + currTime;
         const fileExtension = 'webm';
-        const fileFullName = filePath + fileName + '.' + fileExtension;
-        fs.mkdirSync(filePath, { recursive: true });
+        const fileFullName = PATH_TO_VIDEOS + fileName + '.' + fileExtension;
+        fs.mkdirSync(PATH_TO_VIDEOS, { recursive: true });
         fs.writeFile(fileFullName, Buffer.from(blob), {}, err => {
             if(err){
                 console.error(err)
@@ -42,9 +48,6 @@ module.exports = NodeHelper.create({
 		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
 		const fileExtension = 'webm';
 		const mergeFileName = 'compilation_' + currTime + '.' + fileExtension;
-
-		const PATH_TO_VIDEOS = './modules/MMM-1-Second-A-Day/videos/clips/';
-		const PATH_TO_COMPILATIONS ='./modules/MMM-1-Second-A-Day/videos/compilations/';
 
 		var command = ffmpeg();
 
@@ -67,5 +70,21 @@ module.exports = NodeHelper.create({
     			console.log('Video compilation finished !');
   			})
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
+	},
+
+	uploadCompilations: function () {
+		const uploadUniqueFile = require('./upload.js');
+		const fs = require('fs');
+		
+		let filenames = fs.readdir(PATH_TO_COMPILATIONS, function(err, files) {
+			if (err) 
+				console.log(err);
+			else {
+				files.forEach(function(file) {
+					console.log("Uploading " + file);
+					uploadUniqueFile(file, PATH_TO_COMPILATIONS+file);
+				});
+			}
+		});
 	},
 });
