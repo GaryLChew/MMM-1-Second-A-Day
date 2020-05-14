@@ -43,10 +43,13 @@ Module.register('MMM-1-Second-A-Day',
 			setTimeout(() => recorder.stop(), 1000);
 		});
 	}, notificationReceived: function(notification, payload, sender) {
-	    const self = this;
+		const self = this;
         if (notification === "RECORD_1_SECOND_VIDEO") {
             this.record1SecondVideo(self);
         }
+        if (notification === "COMPILE_VIDEOS") {
+        	this.sendSocketNotification("COMPILE_VIDEOS");
+		}
     },
 
     socketNotificationReceived: function(notification, payload) {

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/garylchew/MMM-1-Second-A-Day#readme",
   "dependencies": {
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "moment": "^2.25.3"
   }
 }
