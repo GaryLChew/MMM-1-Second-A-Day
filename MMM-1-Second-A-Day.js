@@ -5,6 +5,7 @@
  *
  * By Gary Chew and Kyle Stadelmann
  */
+const RECORD_TRANSITION_TIME = 2000;
 
 Module.register('MMM-1-Second-A-Day',
 {
@@ -20,6 +21,7 @@ Module.register('MMM-1-Second-A-Day',
 		this.recordStatus = "STATUS_NOT_RECORDED";
 		this.numStreakDays = 0;
 		this.numTotalClips = 0;
+		this.webcamVideoSrcObject = null;
 	},
 
 	getStyles: function() {
@@ -36,6 +38,16 @@ Module.register('MMM-1-Second-A-Day',
 				break;
 			case "STATUS_RECORDING_IN_PROGRESS":
 				reminder.innerHTML = "Recording...";
+
+				const webcamVideoContainer = document.createElement("div");
+				webcamVideoContainer.id = "webcamVideoContainer";
+				wrapper.appendChild(webcamVideoContainer);
+
+				const webcamVideo = document.createElement("video");
+				webcamVideo.autoplay = true;
+				webcamVideo.id = "webcamVideo";
+				webcamVideo.srcObject = this.webcamVideoSrcObject
+				webcamVideoContainer.appendChild(webcamVideo);
 				break;
 			case "STATUS_RECORDING_COMPLETE":
 				reminder.innerHTML = "You have completed recording today's clip!";
@@ -76,7 +88,7 @@ Module.register('MMM-1-Second-A-Day',
 				this.recordStatus = payload.recordStatus;
 				this.numStreakDays = 0;
 				this.numTotalClips = payload.clipFileNames.length;
-				this.updateDom(1000);
+				this.updateDom(RECORD_TRANSITION_TIME);
 				break;
 			default:
 				Log.error("Unhandled socketNotification")
@@ -84,30 +96,35 @@ Module.register('MMM-1-Second-A-Day',
 		}
     },
 	recordClip: function () {
-		this.recordStatus = "STATUS_RECORDING_IN_PROGRESS";
-		this.updateDom(1000);
 		const self = this;
 		navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
-			const blob_reader = new FileReader();
-			const blobs = [];
-			blob_reader.addEventListener("load", function (ev) {
-				self.sendSocketNotification("SAVE_CLIP", ev.currentTarget.result);
-				if (blobs.length) {
-					ev.currentTarget.readAsArrayBuffer(blobs.shift());
-				}
-			});
+			self.recordStatus = "STATUS_RECORDING_IN_PROGRESS";
+			self.webcamVideoSrcObject = stream;
+			self.updateDom(RECORD_TRANSITION_TIME);
 
-			const recorder = new MediaRecorder(stream);
-			recorder.addEventListener("dataavailable", function (ev) {
-				if (blob_reader.readyState != 1) {
-					blob_reader.readAsArrayBuffer(ev.data);
-				} else {
-					blobs.push(ev.data);
-				}
-			});
+			setTimeout(() => {
+				const blob_reader = new FileReader();
+				const blobs = [];
+				blob_reader.addEventListener("load", function (ev) {
+					self.sendSocketNotification("SAVE_CLIP", ev.currentTarget.result);
+					if (blobs.length) {
+						ev.currentTarget.readAsArrayBuffer(blobs.shift());
+					}
+				});
 
-			recorder.start();
-			setTimeout(() => recorder.stop(), 1000);
+				const recorder = new MediaRecorder(stream);
+				recorder.addEventListener("dataavailable", function (ev) {
+					if (blob_reader.readyState != 1) {
+						blob_reader.readAsArrayBuffer(ev.data);
+					} else {
+						blobs.push(ev.data);
+					}
+				});
+
+				recorder.start();
+				setTimeout(() => recorder.stop(), 1000);
+			}, RECORD_TRANSITION_TIME);
+
 		});
 	}
 });
