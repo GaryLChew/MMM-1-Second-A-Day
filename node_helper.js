@@ -1,7 +1,9 @@
 'use strict';
 const NodeHelper = require('node_helper');
+const fs = require('fs');
+const moment = require('moment');
 
-const PATH_TO_VIDEOS = './modules/MMM-1-Second-A-Day/videos/clips/';
+const PATH_TO_CLIPS = './modules/MMM-1-Second-A-Day/videos/clips/';
 const PATH_TO_COMPILATIONS ='./modules/MMM-1-Second-A-Day/videos/compilations/';
 
 module.exports = NodeHelper.create({
@@ -9,45 +11,56 @@ module.exports = NodeHelper.create({
         console.log("Starting node helper for: " + this.name);
     },
 
+	notificationReceived: function(notification, payload, sender) {
+	},
+
     socketNotificationReceived: function(notification, payload) {
-        if (notification === "SAVE_1_SECOND_VIDEO") {
-            console.log("Node helper received SAVE_1_SECOND_VIDEO");
-            this.save1SecondVideo(payload);
-        }
-		if (notification === "COMPILE_VIDEOS") {
-			console.log("Node helper received COMPILE_VIDEOS");
-			this.compileVideos();
-		}
-		if (notification === "UPLOAD_COMPILATIONS") {
-			console.log("Node helper received UPLOAD_COMPILATIONS");
-			
-			if (payload)
+    	const self = this;
+		switch(notification) {
+			case "START":
+				console.log("Starting node helper socket notification");
+				self.sendSocketNotification("RECORD_STATUS_UPDATE", {
+					recordStatus: "STATUS_NOT_RECORDED",
+					clipFileNames: fs.readdirSync(PATH_TO_CLIPS)
+				});
+				break;
+			case "SAVE_CLIP":
+				this.saveClip(payload);
+				break;
+			case "COMPILE_CLIPS":
+				this.compileClips();
+				break;
+			case "UPLOAD_COMPILATIONS":
 				this.uploadCompilations(payload);
-			else
-				this.uploadCompilations('');
+				break;
+			case "":
+				break;
 		}
     },
 
-    save1SecondVideo : function(blob) {
-        const fs = require('fs');
-        const moment = require('moment');
+    saveClip : function(blob) {
+    	const self = this;
 		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
 		const fileName = 'clip_' + currTime;
         const fileExtension = 'webm';
-        const fileFullName = PATH_TO_VIDEOS + fileName + '.' + fileExtension;
-        fs.mkdirSync(PATH_TO_VIDEOS, { recursive: true });
+        const fileFullName = PATH_TO_CLIPS + fileName + '.' + fileExtension;
+        fs.mkdirSync(PATH_TO_CLIPS, { recursive: true });
         fs.writeFile(fileFullName, Buffer.from(blob), {}, err => {
             if(err){
                 console.error(err)
                 return
             }
             console.log('video saved')
+			self.sendSocketNotification("RECORD_STATUS_UPDATE", {
+				recordStatus: "STATUS_RECORDING_COMPLETE",
+				clipFileNames: fs.readdirSync(PATH_TO_CLIPS)
+			});
         })
     },
 
-    compileVideos: function () {
-		const ffmpeg = require('fluent-ffmpeg');
+    compileClips: function () {
 		const fs = require('fs');
+		const ffmpeg = require('fluent-ffmpeg');
 		const moment = require('moment');
 		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
 		const fileExtension = 'webm';
@@ -55,10 +68,10 @@ module.exports = NodeHelper.create({
 
 		var command = ffmpeg();
 
-		let filenames = fs.readdirSync(PATH_TO_VIDEOS);
+		let filenames = fs.readdirSync(PATH_TO_CLIPS);
 		filenames.forEach(function(filename) {
 			// add each video file to ffmpeg command
-  			command.addInput(PATH_TO_VIDEOS + filename);
+  			command.addInput(PATH_TO_CLIPS + filename);
 		});
 
 	    // create file path for compilation
@@ -82,7 +95,7 @@ module.exports = NodeHelper.create({
 		
 		let filenames = fs.readdir(PATH_TO_COMPILATIONS, function(err, files) {
 			if (err) 
-				console.log(err);
+				console.error(err);
 			else {
 				files.forEach(function(file) {
 					console.log("Uploading " + file);
@@ -90,5 +103,5 @@ module.exports = NodeHelper.create({
 				});
 			}
 		});
-	},
+	}
 });
