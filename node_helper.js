@@ -68,8 +68,8 @@ module.exports = NodeHelper.create({
 
 		const command = ffmpeg();
 
-		let filenames = fs.readdirSync(PATH_TO_CLIPS);
-		filenames.forEach(function(filename) {
+		let clipFileNames = fs.readdirSync(PATH_TO_CLIPS);
+		clipFileNames.forEach(function(filename) {
 			// add each video file to ffmpeg command
   			command.addInput(PATH_TO_CLIPS + filename);
 		});
@@ -80,10 +80,10 @@ module.exports = NodeHelper.create({
 		console.log('Compiling videos to ' + mergeFileName + '...');
 		// call ffmpeg merge command
 		command
-  			.on('error', function(err) {
+			.on('error', function(err) {
     			console.log('An error occurred: ' + err.message);
   			})
-  			.on('end', function() {
+			.on('end', function() {
     			console.log('Video compilation finished !');
   			})
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
@@ -91,8 +91,7 @@ module.exports = NodeHelper.create({
 
 	uploadCompilations: function (destination) {
 		const uploadUniqueFile = require('./upload.js');
-		const fs = require('fs');
-		
+
 		let filenames = fs.readdir(PATH_TO_COMPILATIONS, function(err, files) {
 			if (err) 
 				console.error(err);
