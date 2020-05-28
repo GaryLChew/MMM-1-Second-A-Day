@@ -22,6 +22,7 @@ Module.register('MMM-1-Second-A-Day',
 		this.numStreakDays = 0;
 		this.numTotalClips = 0;
 		this.webcamVideoSrcObject = null;
+		this.firstRecordedDate = null;
 	},
 
 	getStyles: function() {
@@ -30,6 +31,7 @@ Module.register('MMM-1-Second-A-Day',
 
 	getDom: function() {
 		const wrapper = document.createElement("div");
+		wrapper.id = 'MMM1SecondADayContainer';
 		const reminder = document.createElement("p");
 		switch(this.recordStatus) {
 			case "STATUS_NOT_RECORDED":
@@ -59,9 +61,11 @@ Module.register('MMM-1-Second-A-Day',
 		// streak.innerHTML = this.numStreakDays + "-day streak";
 		// wrapper.appendChild(streak);
 
-		const summary = document.createElement("p");
-		summary.innerHTML = this.numTotalClips + " total days recorded, starting from " + "January 27th, 2013";
-		wrapper.appendChild(summary);
+		if (this.firstRecordedDate) {
+			const summary = document.createElement("p");
+			summary.innerHTML = this.numTotalClips + " total days recorded, starting from " + this.firstRecordedDate.toLocaleDateString() + ".";
+			wrapper.appendChild(summary);
+		}
 
 		return wrapper;
 	},
@@ -88,6 +92,10 @@ Module.register('MMM-1-Second-A-Day',
 				this.recordStatus = payload.recordStatus;
 				this.numStreakDays = 0;
 				this.numTotalClips = payload.clipFileNames.length;
+				payload.clipFileNames.sort()
+				const firstFileName = payload.clipFileNames[0];
+				const firstRecordedDateString = firstFileName.slice(5, firstFileName.indexOf(".webm")).replace(/_/g, "/");
+				this.firstRecordedDate = new Date(firstRecordedDateString);
 				this.updateDom(RECORD_TRANSITION_TIME);
 				break;
 			default:
@@ -127,4 +135,5 @@ Module.register('MMM-1-Second-A-Day',
 
 		});
 	}
+
 });
