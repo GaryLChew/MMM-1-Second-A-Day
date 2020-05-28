@@ -20,7 +20,7 @@ Module.register('MMM-1-Second-A-Day',
 	},
 
 	record1SecondVideo: function (self) {
-		navigator.mediaDevices.getUserMedia({audio: true, video: true}).then(function (stream) {
+		navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
 			const blob_reader = new FileReader();
 			const blobs = [];
 			blob_reader.addEventListener("load", function (ev) {
