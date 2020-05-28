@@ -1,4 +1,4 @@
-# MMM-Selfie
+# MMM-1-Second-A-Day
 This is a module for the [MagicMirror](https://github.com/MichMich/MagicMirror) platform.
 
 ## Usage
@@ -9,10 +9,22 @@ The entry in config.js can look like the following. (NOTE: You only have to add 
 	module: 'MMM-1-Second-A-Day',
 	config:
 	{
-	
+		driveDestination: 'YOUR_DRIVE_FOLDER'
 	}
 }
 ```
+
+## Google Drive Integration
+To properly set up uploading video compilations to Google Drive:
+1. Follow this link: https://developers.google.com/drive/api/v3/quickstart/nodejs?
+2. Ensure that you're logged into the desired google account in the top right of the web page.
+3. In the dropdown under "Configure your OAuth client" select "Desktop app" and the press "Create".
+4. Press "Download Client Configuration" and place file into the folder for this module.
+5. Run command 'node upload.js' on command line, and follow steps.
+6. Insert compilations into a specified folder. (Optional)
+	1. On your browser open your Google Drive and go to the folder that you want to insert the compilations into.
+	2. The link should be of the sort: https://drive.google.com/drive/u/0/folders/YOUR_DRIVE_FOLDER, paste YOUR_DRIVE_FOLDER into the module config.
+
 
 ## Dependencies
 ## Open Source Licenses

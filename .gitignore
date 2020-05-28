@@ -1,4 +1,5 @@
 # ignore all files in the build/ directory
 node_modules/
 videos/
-gdrive_auth/
+token.json
+credentials.json
