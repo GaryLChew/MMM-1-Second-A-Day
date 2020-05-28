@@ -19,8 +19,8 @@ module.exports = NodeHelper.create({
 		switch(notification) {
 			case "START":
 				console.log("Starting node helper socket notification");
-				self.sendSocketNotification("RECORD_STATUS_UPDATE", {
-					recordStatus: "STATUS_NOT_RECORDED",
+				self.sendSocketNotification("STATUS_UPDATE", {
+					status: "STATUS_DEFAULT",
 					clipFileNames: fs.readdirSync(PATH_TO_CLIPS)
 				});
 				break;
@@ -51,14 +51,17 @@ module.exports = NodeHelper.create({
                 return
             }
             console.log('video saved')
-			self.sendSocketNotification("RECORD_STATUS_UPDATE", {
-				recordStatus: "STATUS_RECORDING_COMPLETE",
+			self.sendSocketNotification("STATUS_UPDATE", {
+				status: "STATUS_DEFAULT",
 				clipFileNames: fs.readdirSync(PATH_TO_CLIPS)
 			});
         })
     },
 
     compileClips: function () {
+		this.sendSocketNotification("STATUS_UPDATE", {
+			status: "STATUS_COMPILING"
+		});
 		const fs = require('fs');
 		const ffmpeg = require('fluent-ffmpeg');
 		const moment = require('moment');
@@ -90,15 +93,23 @@ module.exports = NodeHelper.create({
 	},
 
 	uploadCompilations: function (destination) {
+    	const self = this;
+		this.sendSocketNotification("STATUS_UPDATE", {
+			status: "STATUS_UPLOADING"
+		});
 		const uploadUniqueFile = require('./upload.js');
 
-		let filenames = fs.readdir(PATH_TO_COMPILATIONS, function(err, files) {
+		fs.readdir(PATH_TO_COMPILATIONS, function(err, files) {
 			if (err) 
 				console.error(err);
 			else {
 				files.forEach(function(file) {
 					console.log("Uploading " + file);
-					uploadUniqueFile(file, PATH_TO_COMPILATIONS+file, destination);
+					uploadUniqueFile(file, PATH_TO_COMPILATIONS+file, destination, () => {
+						self.sendSocketNotification("STATUS_UPDATE", {
+							status: "STATUS_UPLOADED"
+						});
+					});
 				});
 			}
 		});
