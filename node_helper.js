@@ -40,7 +40,7 @@ module.exports = NodeHelper.create({
 
     saveClip : function(blob) {
     	const self = this;
-		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
+		const currTime = moment().format('YYYY[_]MM[_]DD');
 		const fileName = 'clip_' + currTime;
         const fileExtension = 'webm';
         const fileFullName = PATH_TO_CLIPS + fileName + '.' + fileExtension;
@@ -62,11 +62,11 @@ module.exports = NodeHelper.create({
 		const fs = require('fs');
 		const ffmpeg = require('fluent-ffmpeg');
 		const moment = require('moment');
-		const currTime = moment().format('YYYY[_]MM[_]DD[_]hh[.]mm[.]ss');
+		const currTime = moment().format('YYYY[_]MM[_]DD');
 		const fileExtension = 'webm';
 		const mergeFileName = 'compilation_' + currTime + '.' + fileExtension;
 
-		var command = ffmpeg();
+		const command = ffmpeg();
 
 		let filenames = fs.readdirSync(PATH_TO_CLIPS);
 		filenames.forEach(function(filename) {
