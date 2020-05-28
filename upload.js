@@ -12,24 +12,28 @@ const CREDENTIAL_PATH = './modules/MMM-1-Second-A-Day/credentials.json';
 
 const MIME_FILE_TYPE = 'video/webm';
 
-// Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    
-    const credentials = JSON.parse(content);
-    const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
+// Check if 'node upload.js' is being called i.e. if the module directory is
+// current directory
+if (fs.existsSync('upload.js')) {
+    // Load client secrets from a local file.
+    fs.readFile('credentials.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        
+        const credentials = JSON.parse(content);
+        const {client_secret, client_id, redirect_uris} = credentials.installed;
+        const oAuth2Client = new google.auth.OAuth2(
+            client_id, client_secret, redirect_uris[0]);
 
-    // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, (err, token) => {
-        // Check if user hasnt created their token yet
-        if (err) {
-            return getAccessToken(oAuth2Client, function() {});
-        }
-        oAuth2Client.setCredentials(JSON.parse(token));
+        // Check if we have previously stored a token.
+        fs.readFile('token.json', (err, token) => {
+            // Check if user hasnt created their token yet
+            if (err) {
+                return getAccessToken(oAuth2Client, function() {});
+            }
+            oAuth2Client.setCredentials(JSON.parse(token));
+        });
     });
-  });
+}
 
 /**
  * Uploads the file given by path to user's google drive with name 'name'
