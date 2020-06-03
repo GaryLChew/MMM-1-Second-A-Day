@@ -84,14 +84,15 @@ Module.register('MMM-1-Second-A-Day',
 		switch(notification) {
 			case "ALL_MODULES_STARTED":
 				this.sendNotification('REGISTER_VOICE_MODULE', {
-					mode: "RECORD",
+					mode: "CREATE",
 					sentences: [
-						"RECORD CLIP",
+						"CREATE CLIP",
 						"CREATE COMPILATION"
 					]
 				});
 				break;
-			case "VOICE_RECORD":
+			case "VOICE_CREATE":
+				Log.log("teststs");
 				if (sender.name === "MMM-voice"){
 					this.checkCommands(payload);
 				}
@@ -164,12 +165,12 @@ Module.register('MMM-1-Second-A-Day',
 	},
 
 	checkCommands: function(data){
-		if(/(RECORD)/g.test(data) && /(CLIP)/g.test(data)){
-			console.log("Detected RECORD_CLIP command");
-			this.sendNotification("RECORD_CLIP", '');
-		} else if (/(CREATE)/g.test(data) && /(COMPILATION)/g.test(data)) {
-			console.log("Detected COMPILE_CLIPS command");
-			this.sendNotification("COMPILE_CLIPS", '');
+		if(/(CLIP)/g.test(data)){
+			Log.log("Detected RECORD_CLIP command");
+			this.recordClip();
+		} else if (/(COMPILATION)/g.test(data)) {
+			Log.log("Detected COMPILE_CLIPS command");
+			this.sendSocketNotification("COMPILE_CLIPS");
 		}
 	}
 });
