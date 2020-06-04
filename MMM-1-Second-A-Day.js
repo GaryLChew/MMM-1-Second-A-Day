@@ -101,7 +101,7 @@ Module.register('MMM-1-Second-A-Day',
 				this.recordClip();
 				break;
 			case "COMPILE_CLIPS":
-				this.sendSocketNotification("COMPILE_CLIPS");
+				this.sendSocketNotification("COMPILE_CLIPS", this.config.driveDestination);
 				break;
 			case "UPLOAD_COMPILATIONS":
 				this.sendSocketNotification("UPLOAD_COMPILATIONS", this.config.driveDestination);

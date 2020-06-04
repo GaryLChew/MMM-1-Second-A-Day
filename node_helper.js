@@ -28,7 +28,7 @@ module.exports = NodeHelper.create({
 				this.saveClip(payload);
 				break;
 			case "COMPILE_CLIPS":
-				this.compileClips();
+				this.compileClips(payload);
 				break;
 			case "UPLOAD_COMPILATIONS":
 				this.uploadCompilations(payload);
@@ -58,7 +58,7 @@ module.exports = NodeHelper.create({
         })
     },
 
-    compileClips: function () {
+    compileClips: function (driveConfig) {
 		this.sendSocketNotification("STATUS_UPDATE", {
 			status: "STATUS_COMPILING"
 		});
@@ -87,7 +87,10 @@ module.exports = NodeHelper.create({
     			console.log('An error occurred: ' + err.message);
   			})
 			.on('end', function() {
-    			console.log('Video compilation finished !');
+				console.log('Video compilation finished !');
+				
+				// Start uploading
+				this.uploadCompilations(driveConfig);
   			})
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
 	},
