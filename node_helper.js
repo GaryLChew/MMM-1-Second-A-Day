@@ -81,6 +81,7 @@ module.exports = NodeHelper.create({
 		fs.mkdirSync(PATH_TO_COMPILATIONS, { recursive: true });
 
 		console.log('Compiling videos to ' + mergeFileName + '...');
+		let self = this;
 		// call ffmpeg merge command
 		command
 			.on('error', function(err) {
@@ -90,7 +91,7 @@ module.exports = NodeHelper.create({
 				console.log('Video compilation finished !');
 				
 				// Start uploading
-				this.uploadCompilations(driveConfig);
+				self.uploadCompilations(driveConfig);
   			})
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
 	},
