@@ -117,7 +117,7 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  * @param {Object} uploadInfo The file info about this upload, used in callback
  */
-function uploadUniqueFile(auth, uploadInfo, callback) {
+function uploadUniqueFile(auth, uploadInfo) {
     const drive = google.drive({version: 'v3', auth});
     drive.files.list({
         pageSize: 1000,
@@ -134,14 +134,14 @@ function uploadUniqueFile(auth, uploadInfo, callback) {
             }
         }
 
-        uploadFile(auth, uploadInfo, callback);
+        uploadFile(auth, uploadInfo);
     });
   }
 
 /**
 * Uploads a file to google drive.
 */ 
-function uploadFile(auth, uploadInfo, callback) {
+function uploadFile(auth, uploadInfo) {
     const drive = google.drive({version: 'v3', auth});
     let fileMetadata;
     if (uploadInfo.driveDestination !== '') {
@@ -168,7 +168,6 @@ function uploadFile(auth, uploadInfo, callback) {
             console.error(err);
         } else {
             console.log('Finished uploading ' + uploadInfo.uploadFileName);
-            callback();
         }
     });
 }
