@@ -90,8 +90,14 @@ module.exports = NodeHelper.create({
 			.on('end', function() {
 				console.log('Video compilation finished !');
 				
-				// Start uploading
-				self.uploadCompilations(driveConfig);
+				// Start uploading 
+				if (driveConfig) {
+					// config exists
+					self.uploadCompilations(driveConfig);
+				} else {
+					// config not set, default folder
+					self.uploadCompilations('');
+				}
   			})
   			.mergeToFile(PATH_TO_COMPILATIONS + mergeFileName);
 	},
