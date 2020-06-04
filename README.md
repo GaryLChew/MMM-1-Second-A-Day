@@ -1,7 +1,12 @@
 # MMM-1-Second-A-Day
 This is a module for the [MagicMirror](https://github.com/MichMich/MagicMirror) platform.
 
-## Usage
+Record daily 1-second-clips and automatically generate a 1-second-a-day video of your life.
+
+
+## Configuration
+[Sample MagicMirror repository w/ MMM-1-Second-A-Day set up](https://github.com/GaryLChew/SmartMirror)
+
 The entry in config.js can look like the following. (NOTE: You only have to add the variables to config if want to change its standard value.)
 
 ```
@@ -13,6 +18,8 @@ The entry in config.js can look like the following. (NOTE: You only have to add 
 	}
 }
 ```
+
+You must also integrate this module with your Google Drive in order to upload compilations online. See the "Google Drive Integration" section.
 
 ## Google Drive Integration
 To properly set up uploading video compilations to Google Drive:
