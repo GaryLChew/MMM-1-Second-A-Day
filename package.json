@@ -22,6 +22,6 @@
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^39.2.0",
-    "moment": "^2.25.3"
+    "moment": "^2.29.4"
   }
 }
